@@ -1,0 +1,205 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="TwitterModel.Store" Provider="MySql.Data.MySqlClient" ProviderManifestToken="5.7" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="configinfo">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="text" Type="varchar" MaxLength="1000" />
+          <Property Name="user" Type="varchar" MaxLength="45" />
+        </EntityType>
+        <EntityType Name="sources">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="source" Type="varchar" MaxLength="170" Nullable="false" />
+        </EntityType>
+        <EntityType Name="tweets">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="bigint" Nullable="false" />
+          <Property Name="created_at" Type="datetime" Precision="6" Nullable="false" />
+          <Property Name="updated_at" Type="datetime" Precision="6" Nullable="false" />
+          <Property Name="retweet_count" Type="int" Nullable="false" />
+          <Property Name="favorite_count" Type="int" Nullable="false" />
+          <Property Name="user_id" Type="bigint" Nullable="false" />
+          <Property Name="text" Type="varchar" MaxLength="170" Nullable="false" />
+          <Property Name="source_id" Type="bigint" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'def.twitter_dev.users' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="users">
+          <Key>
+            <PropertyRef Name="user_id" />
+            <PropertyRef Name="user_name" />
+          </Key>
+          <Property Name="user_id" Type="bigint" Nullable="false" />
+          <Property Name="user_name" Type="varchar" MaxLength="20" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__Tweets__source_i__29572725">
+          <End Role="sources" Type="Self.sources" Multiplicity="1" />
+          <End Role="tweets" Type="Self.tweets" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sources">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tweets">
+              <PropertyRef Name="source_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="TwitterModelStoreContainer">
+          <EntitySet Name="configinfo" EntityType="Self.configinfo" Schema="twitter_dev" store:Type="Tables" />
+          <EntitySet Name="sources" EntityType="Self.sources" Schema="twitter_dev" store:Type="Tables" />
+          <EntitySet Name="tweets" EntityType="Self.tweets" Schema="twitter_dev" store:Type="Tables" />
+          <EntitySet Name="users" EntityType="Self.users" store:Type="Tables" store:Schema="twitter_dev">
+            <DefiningQuery>SELECT
+`users`.`user_id`, 
+`users`.`user_name`
+FROM `users` AS `users`</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK__Tweets__source_i__29572725" Association="Self.FK__Tweets__source_i__29572725">
+            <End Role="sources" EntitySet="sources" />
+            <End Role="tweets" EntitySet="tweets" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="TwitterModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="configinfo">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="text" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="user" Type="String" MaxLength="45" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="source">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="source1" Type="String" MaxLength="170" FixedLength="false" Unicode="false" Nullable="false" />
+          <NavigationProperty Name="tweets" Relationship="Self.FK__Tweets__source_i__29572725" FromRole="sources" ToRole="tweets" />
+        </EntityType>
+        <EntityType Name="tweet">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int64" Nullable="false" />
+          <Property Name="created_at" Type="DateTime" Nullable="false" />
+          <Property Name="updated_at" Type="DateTime" Nullable="false" />
+          <Property Name="retweet_count" Type="Int32" Nullable="false" />
+          <Property Name="favorite_count" Type="Int32" Nullable="false" />
+          <Property Name="user_id" Type="Int64" Nullable="false" />
+          <Property Name="text" Type="String" MaxLength="170" FixedLength="false" Unicode="false" Nullable="false" />
+          <Property Name="source_id" Type="Int64" Nullable="false" />
+          <NavigationProperty Name="source" Relationship="Self.FK__Tweets__source_i__29572725" FromRole="tweets" ToRole="sources" />
+        </EntityType>
+        <EntityType Name="user">
+          <Key>
+            <PropertyRef Name="user_id" />
+            <PropertyRef Name="user_name" />
+          </Key>
+          <Property Name="user_id" Type="Int64" Nullable="false" />
+          <Property Name="user_name" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
+        </EntityType>
+        <Association Name="FK__Tweets__source_i__29572725">
+          <End Role="sources" Type="Self.source" Multiplicity="1" />
+          <End Role="tweets" Type="Self.tweet" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="sources">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="tweets">
+              <PropertyRef Name="source_id" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="TwitterEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="configinfoes" EntityType="Self.configinfo" />
+          <EntitySet Name="sources" EntityType="Self.source" />
+          <EntitySet Name="tweets" EntityType="Self.tweet" />
+          <EntitySet Name="users" EntityType="Self.user" />
+          <AssociationSet Name="FK__Tweets__source_i__29572725" Association="Self.FK__Tweets__source_i__29572725">
+            <End Role="sources" EntitySet="sources" />
+            <End Role="tweets" EntitySet="tweets" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="TwitterModelStoreContainer" CdmEntityContainer="TwitterEntities">
+          <EntitySetMapping Name="configinfoes">
+            <EntityTypeMapping TypeName="TwitterModel.configinfo">
+              <MappingFragment StoreEntitySet="configinfo">
+                <ScalarProperty Name="user" ColumnName="user" />
+                <ScalarProperty Name="text" ColumnName="text" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sources">
+            <EntityTypeMapping TypeName="TwitterModel.source">
+              <MappingFragment StoreEntitySet="sources">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="source1" ColumnName="source" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="tweets">
+            <EntityTypeMapping TypeName="TwitterModel.tweet">
+              <MappingFragment StoreEntitySet="tweets">
+                <ScalarProperty Name="id" ColumnName="id" />
+                <ScalarProperty Name="created_at" ColumnName="created_at" />
+                <ScalarProperty Name="updated_at" ColumnName="updated_at" />
+                <ScalarProperty Name="retweet_count" ColumnName="retweet_count" />
+                <ScalarProperty Name="favorite_count" ColumnName="favorite_count" />
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="text" ColumnName="text" />
+                <ScalarProperty Name="source_id" ColumnName="source_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="users">
+            <EntityTypeMapping TypeName="TwitterModel.user">
+              <MappingFragment StoreEntitySet="users">
+                <ScalarProperty Name="user_id" ColumnName="user_id" />
+                <ScalarProperty Name="user_name" ColumnName="user_name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="true" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>
